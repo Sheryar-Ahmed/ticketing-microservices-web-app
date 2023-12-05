@@ -11,6 +11,7 @@ app.use(authRouter);
 const start = async() => {
   try {
     await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
+    console.log("Connected to database Successfully.")
   } catch (error) {
     console.log("Error connecting to database 500 internal server error", error)
   }
