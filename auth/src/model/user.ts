@@ -1,39 +1,49 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
 
-//an interface that describes the properties that are required to create a new user.
+// an interface that describes the properties that are required to create a new user.
 interface UserAttr {
-    email: string,
-    password: string
+    email: string;
+    password: string;
 }
-//An interface that describes the properties that the usermodel is going to have.
-interface UserModal extends mongoose.Model<userDoc> {
-    build(attrs: UserAttr): userDoc;
+
+// an interface that describes the properties that the user model is going to have.
+interface UserModal extends mongoose.Model<UserDoc> {
+    build(attrs: UserAttr): UserDoc;
+    comparePassword(candidatePassword: string, storedPassword: string): Promise<boolean>;
 }
-//An interface that describes the properties that the user document is going to return;
-interface userDoc extends mongoose.Document {
-    email: string,
-    password: string,
-    createdAt: string,
-    updatedAt: string
+
+// an interface that describes the properties that the user document is going to return.
+interface UserDoc extends mongoose.Document {
+    email: string;
+    password: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
-        require: true
+        required: true,
     },
     password: {
         type: String,
-        require: true
-    }
+        required: true,
+    },
+},
+{
+    toJSON: {
+        transform(doc, ret) {
+            delete ret.password;
+        },
+    },
 });
 
-userSchema.pre('save', async function (this: userDoc, done) {
+userSchema.pre('save', async function (this: UserDoc, done) {
     if (this.isModified('password')) {
-            let password = this.get('password');
-            let hashed = await bcrypt.hash(password, 10);
-            this.set('password', hashed);
+        const password = this.get('password');
+        const hashed = await bcrypt.hash(password, 10);
+        this.set('password', hashed);
     }
     done();
 });
@@ -42,8 +52,10 @@ userSchema.statics.build = (attrs: UserAttr) => {
     return new User(attrs);
 };
 
+userSchema.statics.comparePassword = async function (candidatePassword: string, storedPassword: string): Promise<boolean> {
+    return bcrypt.compare(candidatePassword, storedPassword);
+};
 
-const User = mongoose.model<userDoc, UserModal>("User", userSchema);
-
+const User = mongoose.model<UserDoc, UserModal>("User", userSchema);
 
 export { User };
