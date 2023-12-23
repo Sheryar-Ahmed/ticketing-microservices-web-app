@@ -2,6 +2,8 @@ import express from "express";
 import { json } from "body-parser";
 import mongoose from 'mongoose';
 import cookieSession from "cookie-session";
+import { TicketRouter } from "./routes/ticket";
+
 const app = express();
 
 app.set('trust proxy', true);
@@ -14,7 +16,7 @@ app.use(
     secure: true
   }));
 
-
+app.use(TicketRouter);
 
 const start = async () => {
   try {
