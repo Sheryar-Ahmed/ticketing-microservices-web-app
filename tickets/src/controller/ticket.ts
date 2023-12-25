@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Ticket } from "../model/ticket";
 import { TicketCreatedPublisher } from '../events/ticket-created-publisher';
 import { natsWrapper } from "../nats-wrapper";
+import { TicketUpdatedPublisher } from "../events/ticket-updated-publisher";
 
 const ListAllTickets = async (req: Request, res: Response) => {
     const alltickets = await Ticket.find({});
@@ -119,6 +120,21 @@ const UpdateTicket = async (req: Request, res: Response) => {
     // const updatedTicket = await Ticket.findByIdAndUpdate(req.params.id, updateData);
     foundTicket?.set(updateData);
     foundTicket?.save();
+    //even
+    const ticketUpdatedPublisher = new TicketUpdatedPublisher(natsWrapper.client);
+    // Example data
+    const eventData = {
+        id: foundTicket!.id,
+        version: foundTicket!.__v,
+        title: foundTicket!.title,
+        price: foundTicket!.price,
+        userId: foundTicket!.userId,
+    };
+
+    // Publish the event
+    await ticketUpdatedPublisher.publish(eventData)
+        .then(() => console.log('Ticket Updated Event published successfully'))
+        .catch(error => console.error('Ticket Updated Event Error publishing event:', error));
 
     return res.status(201).json({
         success: true,
