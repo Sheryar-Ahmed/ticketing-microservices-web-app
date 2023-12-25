@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Ticket } from "../model/ticket";
-
+import { TicketCreatedPublisher } from '../events/ticket-created-publisher';
+import { natsWrapper } from "../nats-wrapper";
 
 const ListAllTickets = async (req: Request, res: Response) => {
     const alltickets = await Ticket.find({});
@@ -27,13 +28,28 @@ const CreateTicket = async (req: Request, res: Response) => {
         price,
         userId: req.currentUser!.id
     });
-    newTicket.save();
     if (!newTicket) {
         return res.status(401).json({
             success: false,
             message: "Something bad happend during creation of ticket.Try again",
         })
     }
+    newTicket.save();
+
+    const ticketCreatedPublisher = new TicketCreatedPublisher(natsWrapper.client);
+    // Example data
+    const eventData = {
+        id: newTicket.id,
+        version: 1,
+        title: newTicket.title,
+        price: newTicket.price,
+        userId: newTicket.userId,
+    };
+
+    // Publish the event
+    ticketCreatedPublisher.publish(eventData)
+        .then(() => console.log('Event published successfully'))
+        .catch(error => console.error('Error publishing event:', error));
 
     return res.status(201).json({
         success: true,

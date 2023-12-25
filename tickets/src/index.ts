@@ -3,6 +3,7 @@ import { json } from "body-parser";
 import mongoose from 'mongoose';
 import cookieSession from "cookie-session";
 import { TicketRouter } from "./routes/ticket";
+import { natsWrapper } from './nats-wrapper';
 
 const app = express();
 
@@ -20,6 +21,15 @@ app.use(TicketRouter);
 
 const start = async () => {
   try {
+
+    await natsWrapper.connect('ticketing', '123', 'http://nats-srv:4222');
+    natsWrapper.client.on('close', () => {
+      console.log('NATS connection closed!');
+      process.exit();
+    });
+    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGTERM', () => natsWrapper.client.close());
+
     await mongoose.connect('mongodb://tickets-mongo-srv:27017/tickets');
     console.log("Connected to database Successfully.")
   } catch (error) {
