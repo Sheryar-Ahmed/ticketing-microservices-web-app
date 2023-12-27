@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { Order, OrderStatus } from "../model/order";
 import { Ticket } from "../model/ticket";
+import { OrderCreatedTPublisher } from "../events/order-created-publisher";
+import { natsWrapper } from "../nats-wrapper";
+import { OrderCancelledPublisher } from "../events/order-cancelled-publisher";
 
 //Time to expire a ticket
 const WINDOW_USER_TICKET_EXPIRATION = 15 * 60;
@@ -54,6 +57,16 @@ const createOrder = async (req: Request, res: Response) => {
 
     await order.save();
     //publish an event for it.
+    await new OrderCreatedTPublisher(natsWrapper.client).publish({
+        id: order.id,
+        status: order.status,
+        expiresAt: order.expiresAt.toISOString(),
+        userId: req.currentUser!.id,
+        ticket: {
+            id: ticket.id,
+            price: ticket.price,
+        }
+    });
     return res.status(200).json({
         success: true,
         order
@@ -102,12 +115,12 @@ const deleteOrder = async (req: Request, res: Response) => {
         });
     }
 
-    const deleteOrderExists = await Order.findById(req.params.id);
+    const deleteOrderExists = await Order.findById(req.params.id).populate('ticket');
 
     if (!deleteOrderExists) {
         return res.status(400).json({
             success: false,
-            message: "No Order FOund";
+            message: "No Order FOund"
         })
     }
 
@@ -122,6 +135,13 @@ const deleteOrder = async (req: Request, res: Response) => {
 
     await deleteOrderExists.save();
 
+    //publish an event
+    await new OrderCancelledPublisher(natsWrapper.client).publish({
+        id: deleteOrderExists.id,
+        ticket: {
+            id: deleteOrderExists.ticket.id
+        }
+    });
     return res.status(200).json({
         success: true,
         cancelledOrder: deleteOrderExists
