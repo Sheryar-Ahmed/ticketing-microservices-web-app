@@ -40,6 +40,7 @@ const isAuthenticated = async (
         req.currentUser = decodedData;
         next();
     } catch (error) {
+        console.error('Error in isAuthenticated middleware:', error);
         res.status(401).json({ error: "Unauthorized" });
     }
 };
