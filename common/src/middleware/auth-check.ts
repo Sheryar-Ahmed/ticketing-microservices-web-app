@@ -3,9 +3,9 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 // Define the user interface with id and email properties
 interface UserPayload {
-    id: string,
-    email: string,
-    iat: number
+    id: string;
+    email: string;
+    iat: number;
 }
 
 declare global {
@@ -21,16 +21,16 @@ const isAuthenticated = async (
     res: Response,
     next: NextFunction
 ) => {
-    if (!req.session?.jwt) {
-        res.status(409).json({
-            success: false,
-            message: 'Unauthorized Acess'
-        });
-    }
-
     try {
+        if (!req.session?.jwt) {
+            return res.status(409).json({
+                success: false,
+                message: 'Unauthorized Access'
+            });
+        }
+
         const decodedData = jwt.verify(
-            req.session!.jwt,
+            req.session.jwt,
             process.env.JWT_KEY!
         ) as UserPayload;
 
