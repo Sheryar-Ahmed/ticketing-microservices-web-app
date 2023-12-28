@@ -22,6 +22,9 @@ const isAuthenticated = async (
     next: NextFunction
 ) => {
     try {
+        console.log('JWT in session:', req.session?.jwt);
+
+        
         if (!req.session?.jwt) {
             return res.status(409).json({
                 success: false,
