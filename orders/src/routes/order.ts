@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/api/orders', isAuthenticated, getALLOrders);
 router.get('/api/orders/getone/:orderId', isAuthenticated, getOrderByID);
-router.post('/api/oders/new', isAuthenticated, createOrder);
+router.post('/api/orders/create/:orderId', isAuthenticated, createOrder);
 router.delete('/api/orders/del/:orderId', isAuthenticated, deleteOrder);
 
 

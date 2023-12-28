@@ -14,20 +14,20 @@ const getALLOrders = async (req: Request, res: Response) => {
     }).populate('ticket');
     return res.status(200).json({
         success: true,
+        orders
     })
 }
 
 
 const createOrder = async (req: Request, res: Response) => {
-    const { ticketId } = req.body;
-    if (!ticketId) {
+    if (!req.params.orderId) {
         return res.status(401).json({
             success: false,
             message: "Ticket is required to go",
         });
     }
     //Find the ticket the user is trying to reserve
-    const ticket = await Ticket.findById(ticketId);
+    const ticket = await Ticket.findById(req.params.orderId);
     if (!ticket) {
         return res.status(404).json({
             success: false,
@@ -83,7 +83,7 @@ const getOrderByID = async (req: Request, res: Response) => {
         });
     }
 
-    const existingOrder = await Order.findById(req.params.id).populate('ticket');
+    const existingOrder = await Order.findById(req.params.orderId).populate('ticket');
 
     if (!existingOrder) {
         return res.status(404).json({
@@ -115,7 +115,7 @@ const deleteOrder = async (req: Request, res: Response) => {
         });
     }
 
-    const deleteOrderExists = await Order.findById(req.params.id).populate('ticket');
+    const deleteOrderExists = await Order.findById(req.params.orderId).populate('ticket');
 
     if (!deleteOrderExists) {
         return res.status(400).json({
