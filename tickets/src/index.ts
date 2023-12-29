@@ -22,7 +22,7 @@ app.use(TicketRouter);
 const start = async () => {
   try {
 
-    await natsWrapper.connect('ticketing', '123', 'http://nats-srv:4222');
+    await natsWrapper.connect('ticketing', '1234', 'http://nats-srv:4222');
     natsWrapper.client.on('close', () => {
       console.log('NATS connection closed!');
       process.exit();
