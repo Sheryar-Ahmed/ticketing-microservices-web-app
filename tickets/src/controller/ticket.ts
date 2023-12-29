@@ -41,7 +41,7 @@ const CreateTicket = async (req: Request, res: Response) => {
     // Example data
     const eventData = {
         id: newTicket.id,
-        version: 1,
+        version: newTicket.version,
         title: newTicket.title,
         price: newTicket.price,
         userId: newTicket.userId,
@@ -125,7 +125,7 @@ const UpdateTicket = async (req: Request, res: Response) => {
     // Example data
     const eventData = {
         id: foundTicket!.id,
-        version: foundTicket!.__v,
+        version: foundTicket!.version,
         title: foundTicket!.title,
         price: foundTicket!.price,
         userId: foundTicket!.userId,
