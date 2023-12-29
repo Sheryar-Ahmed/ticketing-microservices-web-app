@@ -4,8 +4,7 @@ import mongoose from 'mongoose';
 import cookieSession from "cookie-session";
 // import { TicketRouter } from "./routes/ticket";
 import { natsWrapper } from './nats-wrapper';
-// import { OrderCreatedListener } from "./events/listener/order-created-listener";
-// import { OrderCancelledListener } from "./events/listener/order-cancelled-listener";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 
 const app = express();
 
@@ -24,7 +23,7 @@ app.use(
 const start = async () => {
   try {
 
-    await natsWrapper.connect('ticketing', '1234', 'http://nats-srv:4222');
+    await natsWrapper.connect('ticketing', '1234567', 'http://nats-srv:4222');
     natsWrapper.client.on('close', () => {
       console.log('NATS connection closed!');
       process.exit();
@@ -33,10 +32,9 @@ const start = async () => {
     process.on('SIGTERM', () => natsWrapper.client.close());
    
     //listening to the orders created and cancellation
-    // new OrderCreatedListener(natsWrapper.client).listen();
-    // new OrderCancelledListener(natsWrapper.client).listen();
+    new OrderCreatedListener(natsWrapper.client).listen();
 
-    await mongoose.connect('mongodb://tickets-mongo-srv:27017/tickets');
+    await mongoose.connect('mongodb://payments-mongo-srv:27017/payments');
     console.log("Connected to database Successfully.")
   } catch (error) {
     console.log("Error connecting to database 500 internal server error", error)
