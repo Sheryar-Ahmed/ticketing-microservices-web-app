@@ -6,7 +6,7 @@ import { natsWrapper } from "../nats-wrapper";
 import { OrderCancelledPublisher } from "../events/order-cancelled-publisher";
 
 //Time to expire a ticket
-const WINDOW_USER_TICKET_EXPIRATION = 15 * 60;
+const WINDOW_USER_TICKET_EXPIRATION = 1 * 60;
 
 const getALLOrders = async (req: Request, res: Response) => {
     const orders = await Order.find({
