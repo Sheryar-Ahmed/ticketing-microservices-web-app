@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import cookieSession from "cookie-session";
 import { TicketRouter } from "./routes/ticket";
 import { natsWrapper } from './nats-wrapper';
+import { OrderCreatedListener } from "./events/listener/order-created-listener";
+import { OrderCancelledListener } from "./events/listener/order-cancelled-listener";
 
 const app = express();
 
@@ -29,6 +31,10 @@ const start = async () => {
     });
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
+   
+    //listening to the orders created and cancellation
+    new OrderCreatedListener(natsWrapper.client).listen();
+    new OrderCancelledListener(natsWrapper.client).listen();
 
     await mongoose.connect('mongodb://tickets-mongo-srv:27017/tickets');
     console.log("Connected to database Successfully.")

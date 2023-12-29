@@ -35,7 +35,7 @@ const CreateTicket = async (req: Request, res: Response) => {
             message: "Something bad happend during creation of ticket.Try again",
         })
     }
-    newTicket.save();
+    await newTicket.save();
 
     const ticketCreatedPublisher = new TicketCreatedPublisher(natsWrapper.client);
     // Example data
@@ -54,7 +54,7 @@ const CreateTicket = async (req: Request, res: Response) => {
 
     return res.status(201).json({
         success: true,
-        newTicket
+        newTicket,
     });
 
 };
@@ -119,7 +119,7 @@ const UpdateTicket = async (req: Request, res: Response) => {
 
     // const updatedTicket = await Ticket.findByIdAndUpdate(req.params.id, updateData);
     foundTicket?.set(updateData);
-    foundTicket?.save();
+    await foundTicket?.save();
     //even
     const ticketUpdatedPublisher = new TicketUpdatedPublisher(natsWrapper.client);
     // Example data

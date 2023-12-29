@@ -21,6 +21,7 @@ export class TicketUpdatedListener {
 
     private async onMessage(data: TicketUpdatedEvent['data'], msg: Message) {
         const { title, price } = data;
+        console.log("data for updation to the order ticket collection", data);
         const ticket = await Ticket.findOne({
             _id: data.id,
             version: data.version - 1,
