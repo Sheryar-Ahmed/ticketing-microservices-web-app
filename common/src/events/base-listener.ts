@@ -6,15 +6,16 @@ interface Event {
   data: any;
 }
 
-export abstract class Listener<T extends Event> {
-  abstract subject: T['subject'];
-  abstract queueGroupName: string;
-  abstract onMessage(data: T['data'], msg: Message): void;
+class BaseListener<T extends Event> {
+  subject: T['subject'];
+  queueGroupName: string;
   protected client: Stan;
   protected ackWait = 5 * 1000;
 
-  constructor(client: Stan) {
+  constructor(client: Stan, subject: T['subject'], queueGroupName: string) {
     this.client = client;
+    this.subject = subject;
+    this.queueGroupName = queueGroupName;
   }
 
   subscriptionOptions() {
@@ -47,4 +48,19 @@ export abstract class Listener<T extends Event> {
       ? JSON.parse(data)
       : JSON.parse(data.toString('utf8'));
   }
+
+  onMessage(data: T['data'], msg: Message): void {
+    // To be implemented in the derived classes
+  }
+}
+
+export function createListener<T extends Event>(
+  client: Stan,
+  subject: T['subject'],
+  queueGroupName: string,
+  onMessage: (data: T['data'], msg: Message) => void
+) {
+  const listener = new BaseListener<T>(client, subject, queueGroupName);
+  listener.onMessage = onMessage;
+  return listener;
 }
