@@ -116,7 +116,12 @@ const UpdateTicket = async (req: Request, res: Response) => {
             })
         }
     };
-
+    if (foundTicket?.orderId) {
+        return res.status(400).json({
+            success: false,
+            message: "Ticket is reserved"
+        })
+    }
     // const updatedTicket = await Ticket.findByIdAndUpdate(req.params.id, updateData);
     foundTicket?.set(updateData);
     await foundTicket?.save();
