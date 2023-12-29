@@ -12,8 +12,9 @@ interface TicketAttrs {
 interface TicketDoc extends mongoose.Document {
     title: string,
     price: number,
-    userId: string
-    version: number
+    userId: string,
+    version: number,
+    orderId?: string, // it will be optional when the ticket is first created only assignable when the order is associated with it.
 }
 
 
@@ -34,6 +35,9 @@ const TicketSchema = new mongoose.Schema({
     userId: {
         type: String,
         required: true
+    },
+    orderId: {
+        type: String,
     }
 },
     {
@@ -45,6 +49,7 @@ const TicketSchema = new mongoose.Schema({
         }
     }
 );
+
 TicketSchema.set('versionKey', 'version');
 TicketSchema.plugin(updateIfCurrentPlugin);
 
