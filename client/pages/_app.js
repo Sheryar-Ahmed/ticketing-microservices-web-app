@@ -1,8 +1,9 @@
 import BuildClient from '../api/build-client';
+import Header from '../components/header';
 
 const AppComponent = ({ Component, pageProps, payload }) => {
     return <div>
-        <h1>Header! {payload.email}</h1>
+        <Header currentUser={payload} />
         <Component {...pageProps} />
     </div>
 }
@@ -10,19 +11,30 @@ const AppComponent = ({ Component, pageProps, payload }) => {
 
 
 AppComponent.getInitialProps = async (appContext) => {
-    const client = BuildClient(appContext.ctx) //appContext is has four data router, Tree, ctx(req, res);
-    const { data } = await client.get('/api/users/me');
+    const client = BuildClient(appContext.ctx);
 
-    let pageProps = {};
-    if (appContext.Component.getInitialProps) {
-        //we will call that pages intial props here providing the request bcz if we defined getIntialProps 
-        //in the Layout we are no longera able to call that page props there. we need to call them here.
-        pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+    try {
+        const { data } = await client.get('/api/users/me');
+        const currentUser = data || null;
+
+        let pageProps = {};
+
+        if (appContext.Component.getInitialProps) {
+            pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+        }
+
+        return {
+            pageProps,
+            currentUser,
+        };
+    } catch (error) {
+        // Handle unauthorized access error
+        return {
+            pageProps: {},
+            currentUser: null,
+        };
     }
-    return {
-        pageProps,
-        ...data
-    };
-}
+};
+
 
 export default AppComponent;
