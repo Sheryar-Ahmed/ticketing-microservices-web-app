@@ -5,6 +5,7 @@ import cookieSession from "cookie-session";
 // import { TicketRouter } from "./routes/ticket";
 import { natsWrapper } from './nats-wrapper';
 import { OrderCreatedListener } from "./events/listeners/order-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listene";
 
 const app = express();
 
@@ -33,7 +34,8 @@ const start = async () => {
    
     //listening to the orders created and cancellation
     new OrderCreatedListener(natsWrapper.client).listen();
-
+    new OrderCancelledListener(natsWrapper.client).listen();
+    
     await mongoose.connect('mongodb://payments-mongo-srv:27017/payments');
     console.log("Connected to database Successfully.")
   } catch (error) {
