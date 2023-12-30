@@ -14,7 +14,7 @@ import Alert from '../../components/Alert';
 import Router from 'next/router';
 
 export default function SignUp() {
-  
+
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -106,7 +106,7 @@ export default function SignUp() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/auth/login" variant="body2">
+              <Link href="/auth/signin" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
