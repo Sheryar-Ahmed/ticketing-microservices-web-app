@@ -27,7 +27,9 @@ app.get('/api/payments', (req: Request, res: Response) => {
 
 const start = async () => {
   try {
-
+    if (!process.env.STRIPE_key) {
+      console.log("Stripe secret is not found");
+    }
     await natsWrapper.connect('ticketing', '1234567', 'http://nats-srv:4222');
     natsWrapper.client.on('close', () => {
       console.log('NATS connection closed!');

@@ -33,7 +33,7 @@ const OrderSchema = new mongoose.Schema({
         enum: Object.values(OrderStatus),
         default: OrderStatus.Created
     },
-    number: {
+    price: {
         type: Number,
     }
 },
