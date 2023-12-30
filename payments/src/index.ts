@@ -1,11 +1,11 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { json } from "body-parser";
 import mongoose from 'mongoose';
 import cookieSession from "cookie-session";
-// import { TicketRouter } from "./routes/ticket";
 import { natsWrapper } from './nats-wrapper';
 import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 import { OrderCancelledListener } from "./events/listeners/order-cancelled-listene";
+import { chargeRouter } from "./routes/payment";
 
 const app = express();
 
@@ -19,7 +19,11 @@ app.use(
     secure: true
   }));
 
-// app.use(TicketRouter);
+app.use(chargeRouter);
+//home page
+app.get('/api/payments', (req: Request, res: Response) => {
+  res.send({ message: "api/payments is working for pyaments" });
+})
 
 const start = async () => {
   try {
@@ -31,11 +35,11 @@ const start = async () => {
     });
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
-   
+
     //listening to the orders created and cancellation
     new OrderCreatedListener(natsWrapper.client).listen();
     new OrderCancelledListener(natsWrapper.client).listen();
-    
+
     await mongoose.connect('mongodb://payments-mongo-srv:27017/payments');
     console.log("Connected to database Successfully.")
   } catch (error) {
