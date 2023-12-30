@@ -1,9 +1,9 @@
 import BuildClient from '../api/build-client';
 import Header from '../components/header';
 
-const AppComponent = ({ Component, pageProps, payload }) => {
+const AppComponent = ({ Component, pageProps, currentUser }) => {
     return <div>
-        <Header currentUser={payload} />
+        <Header currentUser={currentUser} />
         <Component {...pageProps} />
     </div>
 }

@@ -22,7 +22,6 @@ const drawerWidth = 240;
 
 function DrawerAppBar({ window, currentUser }) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
-
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
