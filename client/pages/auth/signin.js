@@ -13,7 +13,7 @@ import useRequest from '../../hooks/use-request';
 import Alert from '../../components/Alert';
 import Router from 'next/router';
 
-export default function SingIn() {
+export default function SignIn() {
 
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
