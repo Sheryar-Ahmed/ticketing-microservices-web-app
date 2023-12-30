@@ -1,6 +1,5 @@
 import { Message, Stan } from 'node-nats-streaming';
 import { Subjects, ExpirationCompleteEvent, createListener, OrderStatus } from '@satickserv/common';
-import { Ticket } from '../../model/ticket';
 import { queueGroupName } from './queue-group-name';
 import { Order } from '../../model/order';
 import { OrderCancelledPublisher } from '../order-cancelled-publisher';
@@ -26,6 +25,10 @@ export class ExpirationCompletionListener {
         const order = await Order.findById(data.orderId).populate('ticket');
         if (!order) {
             throw new Error("Order Not found during expiration event listener");
+        }
+        //gonna check if the orderstatus is already payed then we are not gonna change it
+        if (order.status === OrderStatus.Complete) {
+            return msg.ack();
         }
 
         order.set({

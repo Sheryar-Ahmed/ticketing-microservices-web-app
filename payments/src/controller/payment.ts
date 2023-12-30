@@ -1,6 +1,9 @@
 import { Request, Response } from "express"
 import { Order, OrderStatus } from "../models/order";
 import { stripe } from "../stripe";
+import { Payment } from "../models/payment";
+import { PaymentCreatedPublisher } from "../events/payment-created-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 
 const createCharge = async (req: Request, res: Response) => {
@@ -28,7 +31,7 @@ const createCharge = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Cannot Pay for a Cancelled Order." });
     }
     //we are gonna charge for the ticket
-    await stripe.charges.create({
+    const charge = await stripe.charges.create({
         currency: 'usd',
         amount: order.price * 100, //accepts in cents
         source: token,
@@ -36,8 +39,22 @@ const createCharge = async (req: Request, res: Response) => {
 
     });
 
+    const payment = Payment.build({
+        orderId: orderId,
+        stripeId: charge.id
+    });
+
+    await payment.save();
+    //publish payment:created event to the orders, and ticket so that it could be availble again 
+    new PaymentCreatedPublisher(natsWrapper.client).publish({
+        id: payment.id,
+        orderId: payment.orderId,
+        stripeId: payment.stripeId
+    });
+    
     res.status(201).json({
         success: true,
+        payment
     })
 }
 

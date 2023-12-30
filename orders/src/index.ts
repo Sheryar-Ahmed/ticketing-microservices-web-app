@@ -7,6 +7,7 @@ import { OrderRouter } from "./routes/order";
 import { TicketCreatedListener } from "./events/listener/ticket-created-listener";
 import { TicketUpdatedListener } from "./events/listener/ticket-updated-listener";
 import { ExpirationCompletionListener } from "./events/listener/expiration-complete-listener";
+import { PaymentCreatedEventListener } from "./events/listener/payment-created-listener";
 const app = express();
 
 app.set('trust proxy', true);
@@ -37,6 +38,7 @@ const start = async () => {
     new TicketCreatedListener(natsWrapper.client).listen();
     new TicketUpdatedListener(natsWrapper.client).listen();
     new ExpirationCompletionListener(natsWrapper.client).listen();
+    new PaymentCreatedEventListener(natsWrapper.client).listen();
     
     await mongoose.connect('mongodb://orders-mongo-srv:27017/orders');
     console.log("Connected to database Successfully.")
