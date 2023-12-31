@@ -36,7 +36,7 @@ function DrawerAppBar({ window, currentUser }) {
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
             <Link href='/'>
                 <Typography variant="h6" sx={{ my: 2 }}>
-                    MUI
+                    ClickTicket
                 </Typography>
             </Link>
             <Divider />
@@ -70,13 +70,16 @@ function DrawerAppBar({ window, currentUser }) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-                    >
-                        ClickTicket
-                    </Typography>
+                    <Link href='/'>
+
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                        >
+                            ClickTicket
+                        </Typography>
+                    </Link>
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         {navItems.filter(linkConfig => linkConfig).map(({ label, href }, index) => (
                             <Link key={index} href={href} >
