@@ -70,16 +70,18 @@ function DrawerAppBar({ window, currentUser }) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Link href='/'>
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                    >
+                        <Link href='/'>
+                            <Button variant='none' sx={{ color: 'white' }}>
+                                ClickTicket
+                            </Button>
+                        </Link>
 
-                        <Typography
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-                        >
-                            ClickTicket
-                        </Typography>
-                    </Link>
+                    </Typography>
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         {navItems.filter(linkConfig => linkConfig).map(({ label, href }, index) => (
                             <Link key={index} href={href} >
