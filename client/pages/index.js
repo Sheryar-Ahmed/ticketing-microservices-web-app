@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material';
 import OutlinedCard from '../components/Card';
-import Link from 'next/link';
 
 const LandingPage = ({ currentUser, tickets }) => {
   return (

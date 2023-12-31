@@ -38,7 +38,7 @@ export default function SignUp() {
     await doRequest();
   };
 
-  const isOpen = !!errors;
+  const open = !!errors;
 
   return (
     <Container
@@ -111,7 +111,7 @@ export default function SignUp() {
               </Link>
             </Grid>
           </Grid>
-          {isOpen && <Alert message={errors} severity="error" isOpen={isOpen} />}
+          {open && <Alert message={errors} severity="error" open={open} />}
         </Box>
       </Box>
     </Container>

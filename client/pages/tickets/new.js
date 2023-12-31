@@ -1,4 +1,5 @@
-import { Box, TextField, Grid, Button, Alert, Typography } from "@mui/material";
+import { Box, TextField, Grid, Button, Typography } from "@mui/material";
+import Alert from '../../components/Alert';
 import React from "react";
 import useRequest from "../../hooks/use-request";
 import Router from 'next/router';
@@ -35,7 +36,7 @@ const CreateTicket = () => {
         await doRequest();
     };
 
-    const isOpen = !!errors;
+    const open = !!errors;
 
 
     return (
@@ -79,7 +80,7 @@ const CreateTicket = () => {
             >
                 Create
             </Button>
-            {isOpen && <Alert message={errors} severity="error" isOpen={isOpen} />}
+            {open && <Alert message={errors} severity="error" open={open} />}
         </Box>
     );
 };
