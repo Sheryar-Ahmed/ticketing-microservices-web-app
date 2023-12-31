@@ -34,7 +34,10 @@ const OrderShow = ({ order }) => {
         <Box sx={{
             width: '100%',
             my: 14,
-            mx: 5
+            mx: 5,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px'
         }}>
             <Typography sx={{ background: 'transparent' }} gutterBottom variant="h5" component="div">
                 <span style={{ background: '#90CAF9', padding: '4px' }}>{timeRemaining}</span>
@@ -45,7 +48,7 @@ const OrderShow = ({ order }) => {
             <Typography gutterBottom variant="h6" component="div">
                 <em>Price:</em> ${order.ticket.price}
             </Typography>
-            <Button variant="contained" endIcon={<PaidOutlinedIcon />}>
+            <Button sx={{maxWidth: '100px'}} variant="contained" endIcon={<PaidOutlinedIcon />}>
                 Pay
             </Button>
         </Box>
