@@ -5,7 +5,7 @@ import { natsWrapper } from "../nats-wrapper";
 import { TicketUpdatedPublisher } from "../events/ticket-updated-publisher";
 
 const ListAllTickets = async (req: Request, res: Response) => {
-    const alltickets = await Ticket.find({});
+    const alltickets = await Ticket.find({ orderId: undefined });
 
     return res.status(200).json({
         success: true,
