@@ -1,7 +1,7 @@
 import { Box, TextField, Grid, Button, Alert, Typography } from "@mui/material";
 import React from "react";
 import useRequest from "../../hooks/use-request";
-
+import Router from 'next/router';
 
 const CreateTicket = () => {
 
@@ -12,7 +12,7 @@ const CreateTicket = () => {
         url: '/api/ticket/new',
         method: 'post',
         body: { title, price },
-        onSuccess: (ticket) => console.log(ticket)
+        onSuccess: () => Router.push('/')
     });
 
     const handleTitleChange = (event) => {
