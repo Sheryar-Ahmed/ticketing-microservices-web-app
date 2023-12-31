@@ -6,13 +6,14 @@ import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import useRequest from '../../hooks/use-request';
 import CustomizedSnackbars from '../../components/Alert';
+import Router from 'next/router';
 
 const TicketShow = ({ ticket }) => {
     const [doRequest, errors] = useRequest({
         url: `/api/orders/create/${ticket.id}`,
         method: 'post',
         body: {},
-        onSuccess: (order) => console.log(order)
+        onSuccess: ({ order }) => Router.push('/orders/[orderId]', `/orders/${order.id}`)
     });
 
     const CreateOrder = async () => {
