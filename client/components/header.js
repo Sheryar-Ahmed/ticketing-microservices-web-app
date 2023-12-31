@@ -28,6 +28,8 @@ function DrawerAppBar({ window, currentUser }) {
     const navItems = [
         !currentUser && { label: 'Sign Up', href: '/auth/signup' },
         !currentUser && { label: 'Sign In', href: '/auth/signin' },
+        currentUser && { label: 'My Orders', href: '/orders' },
+        currentUser && { label: 'Sell Ticket', href: '/tickets/new' },
         currentUser && { label: 'Sign out', href: '/auth/signout' }
     ];
 
