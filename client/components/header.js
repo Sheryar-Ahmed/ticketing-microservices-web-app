@@ -17,7 +17,6 @@ import Button from '@mui/material/Button';
 import Link from 'next/link';
 
 
-
 const drawerWidth = 240;
 
 function DrawerAppBar({ window, currentUser }) {
@@ -35,12 +34,14 @@ function DrawerAppBar({ window, currentUser }) {
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" sx={{ my: 2 }}>
-                MUI
-            </Typography>
+            <Link href='/'>
+                <Typography variant="h6" sx={{ my: 2 }}>
+                    MUI
+                </Typography>
+            </Link>
             <Divider />
             <List>
-                {navItems.filter(linkConfig => linkConfig).map(({label, href}) => (
+                {navItems.filter(linkConfig => linkConfig).map(({ label, href }) => (
                     <ListItem key={label} disablePadding>
                         <Link href={href}>
                             <ListItemButton sx={{ textAlign: 'center' }}>
@@ -79,7 +80,7 @@ function DrawerAppBar({ window, currentUser }) {
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         {navItems.filter(linkConfig => linkConfig).map(({ label, href }, index) => (
                             <Link key={index} href={href} >
-                                <Button  sx={{ color: '#fff' }}>
+                                <Button sx={{ color: '#fff' }}>
                                     {label}
                                 </Button>
                             </Link>
