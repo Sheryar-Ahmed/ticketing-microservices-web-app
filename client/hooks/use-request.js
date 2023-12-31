@@ -6,8 +6,9 @@ const useRequest = ({ url, method, body, onSuccess }) => {
 
     const doRequest = async () => {
         try {
+            setErrors(null);
             const response = await axios[method](url, body);
-            onSuccess();
+            onSuccess(response.data);
             return response.data;
         } catch (error) {
             setErrors(error.response.data.message);
