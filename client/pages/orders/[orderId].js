@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Button } from '@mui/material';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import StripeCheckout from 'react-stripe-checkout';
 
-const OrderShow = ({ order }) => {
+
+const OrderShow = ({ order, currentUser }) => {
     const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining(order.expiresAt));
 
     useEffect(() => {
@@ -27,7 +29,15 @@ const OrderShow = ({ order }) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
 
-        return `Time left to pay: ${minutes}m ${remainingSeconds}s`;
+        return <div>
+            {`Time left to pay: ${minutes}m ${remainingSeconds}s`}
+            <StripeCheckout
+                token={(token) => console.log(token)}
+                stripeKey='pk_test_51OSz2MFlXzAcSOjROyFfwYcf94CDCf9NyxFVV9x0uc9i3DxrX52BwGFOOlJuu2Lut8BwnyYHhsLSzNNITXzcf49C002atOsUFD'
+                email={currentUser.email}
+                amount={order.ticket.price * 100}
+            />
+        </div>
     }
 
     return (
@@ -48,7 +58,7 @@ const OrderShow = ({ order }) => {
             <Typography gutterBottom variant="h6" component="div">
                 <em>Price:</em> ${order.ticket.price}
             </Typography>
-            <Button sx={{maxWidth: '100px'}} variant="contained" endIcon={<PaidOutlinedIcon />}>
+            <Button sx={{ maxWidth: '100px' }} variant="contained" endIcon={<PaidOutlinedIcon />}>
                 Pay
             </Button>
         </Box>
