@@ -4,8 +4,24 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
+import useRequest from '../../hooks/use-request';
+import CustomizedSnackbars from '../../components/Alert';
 
 const TicketShow = ({ ticket }) => {
+    const [doRequest, errors] = useRequest({
+        url: `/api/orders/create/${ticket.id}`,
+        method: 'post',
+        body: {},
+        onSuccess: (order) => console.log(order)
+    });
+
+    const CreateOrder = async () => {
+        await doRequest();
+    };
+    console.log(errors);
+    // Change isOpen to open
+    const open = !!errors;
+
     return (
         <Box sx={{ width: 'full', m: 3 }}>
             <CardContent>
@@ -17,10 +33,11 @@ const TicketShow = ({ ticket }) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button sx={{ backgroundColor: '#e3f2fd', ml: 1 }} size="small">
+                <Button sx={{ backgroundColor: '#e3f2fd', ml: 1 }} size="small" onClick={CreateOrder}>
                     Purchase
                 </Button>
             </CardActions>
+            {open && <CustomizedSnackbars message={errors} severity="info" open={open} />}
         </Box>
     );
 };
@@ -28,7 +45,7 @@ const TicketShow = ({ ticket }) => {
 TicketShow.getInitialProps = async (context, client) => {
     const { ticketId } = context.query; //take the id from the page url
     const { data } = await client.get(`/api/ticket/getone/${ticketId}`);
-    return { ticket: data.ticket }
-}
+    return { ticket: data.ticket };
+};
 
 export default TicketShow;
